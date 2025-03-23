@@ -9,7 +9,7 @@ public static class DbHelper
 {
     public static IDbConnection GetConnection()
     {
-        return new MySqlConnection("server=localhost;database=DapperBeer;user=DapperBeer;password=Test@1234!;AllowUserVariables=True");
+        return new MySqlConnection("server=localhost;database=DapperBeer;user=DapperBeer;password=test1234;AllowUserVariables=True");
     }
 
     public static void CreateTablesAndInsertData()
