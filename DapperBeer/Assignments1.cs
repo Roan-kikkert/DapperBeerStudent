@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DapperBeer.DTO;
 using DapperBeer.Model;
 using DapperBeer.Tests;
+using MySqlConnector;
 
 namespace DapperBeer;
 
@@ -165,8 +166,6 @@ public static List<Beer> GetAllBeersSortedByNameForCountry(string country)
 
             using var connection = DbHelper.GetConnection();
             return connection.Query<Beer>(sql, new { BrewerId = brewerId }).ToList();
-        
-        throw new NotImplementedException();
     }
     
     // 1.9 Question
@@ -174,20 +173,14 @@ public static List<Beer> GetAllBeersSortedByNameForCountry(string country)
     // Gebruik hiervoor de class CafeBeer (directory DTO).
 public static List<CafeBeer> GetCafeBeers()
 {
-    string sql = @"
-        SELECT 
-            c.CafeId, 
-            c.Name AS CafeName, 
-            b.BeerId, 
-            b.Name AS BeerName
-        FROM Cafe c
-        JOIN Cafe cb ON c.CafeId = cb.CafeId
-        JOIN Beer b ON b.BeerId = b.BeerId
-        ORDER BY c.Name, b.Name";
-        
+    string query = @"
+                SELECT c.Name AS CafeName, b.Name AS Beers
+                FROM cafe c
+                JOIN beer b ON c.CafeId = b.BeerId
+                ORDER BY c.Name, b.Name;
+            ";
     using var connection = DbHelper.GetConnection();
-    return connection.Query<CafeBeer>(sql).ToList();
-    
+    return connection.Query<CafeBeer>(query).ToList();
 }
 
     // De vorige 1.10 Question heb ik verwijderd, deze was nogal lastig

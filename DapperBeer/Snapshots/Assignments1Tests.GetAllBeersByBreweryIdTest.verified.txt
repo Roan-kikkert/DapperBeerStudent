@@ -1,18 +1,18 @@
 ﻿[
   {
-    BeerId: 1026,
-    Name: AFFLIGEM DUBBEL,
-    Type: ALE, BELGIA,
-    Style: DUBBEL,
-    Alcohol: 6.5,
-    BrewerId: 689
-  },
-  {
     BeerId: 994,
     Name: AFFLIGEM BLONDE,
     Type: ALE, BELGIA,
     Style: BLONDE,
     Alcohol: 6.8,
+    BrewerId: 689
+  },
+  {
+    BeerId: 1026,
+    Name: AFFLIGEM DUBBEL,
+    Type: ALE, BELGIA,
+    Style: DUBBEL,
+    Alcohol: 6.5,
     BrewerId: 689
   }
 ]
