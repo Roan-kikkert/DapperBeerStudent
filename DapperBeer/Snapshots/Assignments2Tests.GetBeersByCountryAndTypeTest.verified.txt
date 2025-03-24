@@ -1,72 +1,73 @@
 ﻿[
   {
-    BeerId: 1155,
-    Name: ARTEVELDE GRAND CRU,
+    BeerId: 1004,
+    Name: ST. ERLIN,
     Type: ALE, BELGIA,
-    Alcohol: 6.7,
-    BrewerId: 994
+    Style: BLONDE,
+    Alcohol: 6.3,
+    BrewerId: 711
   },
   {
-    BeerId: 1156,
-    Name: AUGUSTIJN,
+    BeerId: 1017,
+    Name: PETRUS OUD BRUIN,
     Type: ALE, BELGIA,
-    Alcohol: 8.0,
-    BrewerId: 748
+    Style: BRUIN,
+    Alcohol: 5.5,
+    BrewerId: 731
   },
   {
-    BeerId: 1042,
-    Name: BACCHUS,
+    BeerId: 1198,
+    Name: PETRUS WINTERBIER,
     Type: ALE, BELGIA,
-    Style: FLEMISH SOUR,
-    Alcohol: 4.6,
-    BrewerId: 1314
-  },
-  {
-    BeerId: 564,
-    Name: MONSTER 2000,
-    Type: ALE, ENGLIS,
-    Style: BARLEY WINE,
-    Alcohol: 11.8,
-    BrewerId: 786
-  },
-  {
-    BeerId: 1344,
-    Name: IMPERIAL STOUT,
-    Type: STOUT & POR,
-    Style: IMPERIAL,
-    Alcohol: 11.8,
-    BrewerId: 1173
-  },
-  {
-    BeerId: 536,
-    Name: CRIPPLE DICK,
-    Type: ALE, ENGLIS,
-    Style: BARLEY WINE,
-    Alcohol: 11.7,
-    BrewerId: 1233
-  },
-  {
-    BeerId: 844,
-    Name: 1824 PARTICULAR,
-    Type: ALE, ENGLIS,
-    Style: STRONG BITTER/PALE,
-    Alcohol: 6.0,
-    BrewerId: 1305
-  },
-  {
-    BeerId: 574,
-    Name: 1828 ANNIVERSARY ALE,
-    Type: ALE, ENGLIS,
-    Style: BITTER/PALE,
-    Alcohol: 4.8,
-    BrewerId: 1048
-  },
-  {
-    BeerId: 845,
-    Name: 1830 AMBER,
-    Type: ALE, ENGLIS,
-    Style: STRONG BITTER/PALE,
     Alcohol: 6.5,
-    BrewerId: 1143
+    BrewerId: 731
+  },
+  {
+    BeerId: 1399,
+    Name: BLANCHE DES HONNELLES,
+    Type: WHEAT (GRAN,
+    Style: BLANCHE-WIT,
+    Alcohol: 6.0,
+    BrewerId: 682
+  },
+  {
+    BeerId: 44,
+    Name: KLOSTERBRAU PILSENER,
+    Type: LAGER,PALE,
+    Style: PILSEN,
+    Alcohol: 5.0,
+    BrewerId: 683
+  },
+  {
+    BeerId: 1003,
+    Name: SERAFIJN CELTIC ANGEL,
+    Type: ALE, BELGIA,
+    Style: BLONDE,
+    Alcohol: 6.2,
+    BrewerId: 684
+  },
+  {
+    BeerId: 1399,
+    Name: BLANCHE DES HONNELLES,
+    Type: WHEAT (GRAN,
+    Style: BLANCHE-WIT,
+    Alcohol: 6.0,
+    BrewerId: 682
+  },
+  {
+    BeerId: 44,
+    Name: KLOSTERBRAU PILSENER,
+    Type: LAGER,PALE,
+    Style: PILSEN,
+    Alcohol: 5.0,
+    BrewerId: 683
+  },
+  {
+    BeerId: 1003,
+    Name: SERAFIJN CELTIC ANGEL,
+    Type: ALE, BELGIA,
+    Style: BLONDE,
+    Alcohol: 6.2,
+    BrewerId: 684
   }
 ]

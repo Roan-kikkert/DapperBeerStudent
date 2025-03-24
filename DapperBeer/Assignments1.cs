@@ -176,7 +176,8 @@ public static List<CafeBeer> GetCafeBeers()
     string query = @"
                 SELECT c.Name AS CafeName, b.Name AS Beers
                 FROM cafe c
-                JOIN beer b ON c.CafeId = b.BeerId
+                JOIN sells s ON s.CafeId = c.CafeId
+                JOIN beer b ON s.BeerId = b.BeerId
                 ORDER BY c.Name, b.Name;
             ";
     using var connection = DbHelper.GetConnection();

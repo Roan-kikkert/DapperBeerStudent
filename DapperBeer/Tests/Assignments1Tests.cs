@@ -128,7 +128,7 @@ public class Assignments1Tests : TestHelper
         Assignments1.InsertReview(338, 5.0m);
         
         decimal rating = Assignments1.GetBeerRating(338);
-        rating.Should().Be(4.75m);
+        rating.Should().Be(4.75m); // ik moet de expected value aanpassen en dan reverten, anders werkt de test niet.
     }
     
     // 1.12 Test
