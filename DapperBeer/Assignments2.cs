@@ -146,13 +146,14 @@ public class Assignments2
     public static List<BrewerBeerBrewmaster> GetAllBeerNamesWithBreweryAndBrewmaster()
     {
         using IDbConnection connection = DbHelper.GetConnection();
-        string sql = """
-                     SELECT beer.Name AS BeerName, brewer.Name AS BreweryName, brewer.Brewmaster AS BrewmasterName
-                     FROM Beer beer
-                          LEFT JOIN Brewer brewer ON beer.BrewerId = brewer.BrewerId
-                     WHERE brewer.Brewmaster IS NOT NULL
+        string sql = @"
+                     SELECT beer.Name as BeerName, brewer.Name AS BrewerName, brewmaster.Name AS brewmasterName   
+                     FROM brewer brewer
+                          LEFT JOIN brewmaster brewmaster ON brewer.BrewerId = brewmaster.BrewerId
+                          JOIN beer beer ON brewer.BrewerId = beer.BrewerId
+                     WHERE brewmaster.Name IS NOT NULL
                      ORDER BY beer.Name
-                     """;
+                     ";
         return connection.Query<BrewerBeerBrewmaster>(sql).ToList();
     }
     
