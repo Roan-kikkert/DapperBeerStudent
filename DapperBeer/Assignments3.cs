@@ -25,7 +25,24 @@ public class Assignments3
     // Kijk in voorbeelden hoe je dit kan doen. Deze staan in de directory ExampleFromSheets/Relationships.cs.
     public static List<Brewmaster> GetAllBrouwmeestersIncludesAddress()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+                    SELECT brewmaster.Name, adress.AddressId AS AddressSplit
+                    FROM brewmaster
+                    INNER JOIN Address adress ON brewmaster.AddressId = adress.addressId
+                    ORDER BY brewmaster.Name";
+    
+        List<Brewmaster> brewmaster = connection.Query<Brewmaster, Address, Brewmaster>(
+            sql,
+            (brewmaster, address) =>
+            {
+                brewmaster.Address = address;
+                return brewmaster;
+            },
+            splitOn: "AddressSplit")
+            .ToList();
+    
+        return brewmaster;
     }
 
     // 3.2 Question
@@ -34,7 +51,24 @@ public class Assignments3
     // Sorteer op naam.
     public static List<Brewmaster> GetAllBrewmastersWithBrewery()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+                    SELECT brewmaster.Name, brewer.Name AS BrewerSplit
+                    FROM brewmaster
+                    INNER JOIN Brewer brewer ON brewmaster.BrewerId = brewer.BrewerId
+                    ORDER BY brewmaster.Name";
+    
+        List<Brewmaster> brewmaster = connection.Query<Brewmaster, Brewer, Brewmaster>(
+                sql,
+                (brewmaster, brewer) =>
+                {
+                    brewmaster.Brewer = brewer;
+                    return brewmaster;
+                },
+                splitOn: "BrewerSplit")
+            .ToList();
+    
+        return brewmaster;
     }
 
     // 3.3 Question
@@ -54,7 +88,27 @@ public class Assignments3
     // hoe moet dan je if worden?
     public static List<Brewer> GetAllBrewersIncludeBrewmaster()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+                    SELECT brewer.Name AS Brewer, brewmaster.Name AS BrewmasterSplit
+                    FROM brewer
+                        LEFT JOIN brewmaster ON brewer.BrewerId = brewmaster.BrewerId
+                    ORDER BY brewmaster.Name
+        ";
+        List<Brewer> brewer = connection.Query<Brewer, Brewmaster?, Brewer>(
+                sql,
+                (brewer, brewmaster) =>
+                {
+                    if (brewmaster is not null)
+                    {
+                        brewer.Brewmaster = brewmaster;
+                    }
+
+                    return brewer;
+                },
+                splitOn: "BrewmasterSplit")
+            .ToList();
+        return brewer;
     }
     
     // 3.4 Question
@@ -66,7 +120,31 @@ public class Assignments3
     // Kijk in voorbeelden hoe je dit kan doen. Deze staan in de directory ExampleFromSheets/Relationships.cs.
     public static List<Beer> GetAllBeersIncludeBrewery()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+            SELECT beer.BeerId, beer.Name AS BeerName, beer.Type, beer.alcohol, 
+                   brewer.BrewerId, brewer.Name AS BrewerName, brewer.Country
+            FROM Beer AS beer
+            INNER JOIN Brewer AS brewer ON beer.BrewerId = brewer.BrewerId
+            ORDER BY beer.Name, beer.BeerId";
+    
+        var breweryLookup = new Dictionary<int, Brewer>();
+        List<Beer> beers = connection.Query<Beer, Brewer, Beer>(
+            sql,
+            (beer, brewer) =>
+            {
+                if (!breweryLookup.TryGetValue(brewer.BrewerId, out var existingBrewer))
+                {
+                    existingBrewer = brewer;
+                    breweryLookup.Add(brewer.BrewerId, existingBrewer);
+                }
+                beer.Brewer = existingBrewer;
+                return beer;
+            },
+            splitOn: "BrewerId")
+            .ToList();
+    
+        return beers;
     }
     
     // 3.5 Question
@@ -79,7 +157,30 @@ public class Assignments3
     // Als N groot is (veel brouwerijen) dan kan dit een performance probleem zijn of worden. Probeer dit te voorkomen!
     public static List<Brewer> GetAllBrewersIncludingBeersNPlus1()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+    
+        // Fetch all brewers (1 query)
+        string fetchBrewersSql = @"
+            SELECT brewer.BrewerId, brewer.Name, brewer.Country
+            FROM Brewer AS brewer
+            ORDER BY brewer.Name";
+    
+        List<Brewer> brewers = connection.Query<Brewer>(fetchBrewersSql).ToList();
+    
+        // Fetch beers for each brewer (N queries)
+        string fetchBeersSql = @"
+            SELECT beer.BeerId, beer.Name AS BeerName, beer.Type, beer.Alcohol, beer.BrewerId
+            FROM Beer AS beer
+            WHERE beer.BrewerId = @BrewerId
+            ORDER BY beer.Name";
+    
+        foreach (Brewer brewer in brewers)
+        {
+            List<Beer> beers = connection.Query<Beer>(fetchBeersSql, new { BrewerId = brewer.BrewerId }).ToList();
+            brewer.Beers = beers;
+        }
+    
+        return brewers;
     }
     
     // 3.6 Question
@@ -97,7 +198,37 @@ public class Assignments3
     
     public static List<Brewer> GetAllBrewersIncludeBeers()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+            SELECT brewer.BrewerId, brewer.Name AS BrewerName, brewer.Country, 
+                   beer.BeerId, beer.Name AS BeerName, beer.Type, beer.Alcohol
+            FROM Brewer AS brewer
+            LEFT JOIN Beer AS beer ON brewer.BrewerId = beer.BrewerId
+            ORDER BY brewer.Name, beer.Name";
+    
+        var brewersLookup = new Dictionary<int, Brewer>();
+        List<Brewer> brewers = connection.Query<Brewer, Beer, Brewer>(
+            sql,
+            (brewer, beer) =>
+            {
+                if (!brewersLookup.TryGetValue(brewer.BrewerId, out var existingBrewer))
+                {
+                    existingBrewer = brewer;
+                    existingBrewer.Beers = new List<Beer>();
+                    brewersLookup[brewer.BrewerId] = existingBrewer;
+                }
+    
+                if (beer != null)
+                {
+                    existingBrewer.Beers.Add(beer);
+                }
+    
+                return existingBrewer;
+            },
+            splitOn: "BeerId"
+        ).Distinct().ToList();
+    
+        return brewers;
     }
     
     // 3.7 Question

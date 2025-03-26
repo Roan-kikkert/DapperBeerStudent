@@ -1,32 +1,14 @@
 ﻿[
   {
-    BrewmasterId: 5,
     Name: Aiyana Dietrich,
-    Address: {
-      AddressId: 5,
-      Street: 75415 Metz Path,
-      City: South Winona,
-      Country: Romania
-    }
+    Address: {}
   },
   {
-    BrewmasterId: 29,
     Name: Alaina Hintz,
-    Address: {
-      AddressId: 29,
-      Street: 2449 Cummerata Extensions,
-      City: Port Einartown,
-      Country: Tanzania
-    }
+    Address: {}
   },
   {
-    BrewmasterId: 21,
     Name: Albina Toy,
-    Address: {
-      AddressId: 21,
-      Street: 9991 Fay Walk,
-      City: Port Nelson,
-      Country: Angola
-    }
+    Address: {}
   }
 ]
