@@ -257,7 +257,38 @@ public class Assignments3
     // Als je dit namelijk verkeerd doet, kan dit grote gevolgen hebben voor je resultaat (je krijgt dan misschien een verkeerde aantal records).
     public static List<Cafe> OverzichtBierenPerKroegLijstMultiMapper()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+            SELECT cafe.CafeId, cafe.Name AS CafeName, cafe.Address,
+                   beer.BeerId, beer.Name AS BeerName, beer.Type, beer.Alcohol
+            FROM Cafe AS cafe
+            LEFT JOIN Sells AS sells ON cafe.CafeId = sells.CafeId
+            LEFT JOIN Beer AS beer ON sells.BeerId = beer.BeerId
+            ORDER BY cafe.Name, beer.Name";
+    
+        var cafeLookup = new Dictionary<int, Cafe>();
+        List<Cafe> cafes = connection.Query<Cafe, Beer, Cafe>(
+            sql,
+            (cafe, beer) =>
+            {
+                if (!cafeLookup.TryGetValue(cafe.CafeId, out var existingCafe))
+                {
+                    existingCafe = cafe;
+                    existingCafe.Beers = new List<Beer>();
+                    cafeLookup[cafe.CafeId] = existingCafe;
+                }
+    
+                if (beer != null)
+                {
+                    existingCafe.Beers.Add(beer);
+                }
+    
+                return existingCafe;
+            },
+            splitOn: "BeerId"
+        ).Distinct().ToList();
+    
+        return cafes;
     }
 
     // 3.9 Question
@@ -269,7 +300,53 @@ public class Assignments3
     // Je zult twee dictionaries moeten gebruiken. Een voor de brouwerijen en een voor de bieren.
     public static List<Brewer> GetAllBrewersIncludeBeersThenIncludeCafes()
     {
-        throw new NotImplementedException();
+        using var connection = DbHelper.GetConnection();
+        string sql = @"
+            SELECT brewer.BrewerId, brewer.Name AS BrewerName, brewer.Country, 
+                   beer.BeerId, beer.Name AS BeerName, beer.Type, beer.Alcohol, 
+                   cafe.CafeId, cafe.Name AS CafeName, cafe.Address
+            FROM Brewer AS brewer
+            LEFT JOIN Beer AS beer ON brewer.BrewerId = beer.BrewerId
+            LEFT JOIN Sells AS sells ON beer.BeerId = sells.BeerId
+            LEFT JOIN Cafe AS cafe ON sells.CafeId = cafe.CafeId
+            ORDER BY brewer.Name, beer.Name, cafe.Name";
+    
+        var brewerLookup = new Dictionary<int, Brewer>();
+        var beerLookup = new Dictionary<int, Beer>();
+    
+        List<Brewer> brewers = connection.Query<Brewer, Beer, Cafe, Brewer>(
+            sql,
+            (brewer, beer, cafe) =>
+            {
+                if (!brewerLookup.TryGetValue(brewer.BrewerId, out var existingBrewer))
+                {
+                    existingBrewer = brewer;
+                    existingBrewer.Beers = new List<Beer>();
+                    brewerLookup[brewer.BrewerId] = existingBrewer;
+                }
+    
+                if (beer != null)
+                {
+                    if (!beerLookup.TryGetValue(beer.BeerId, out var existingBeer))
+                    {
+                        existingBeer = beer;
+                        existingBeer.Cafes = new List<Cafe>();
+                        existingBrewer.Beers.Add(existingBeer);
+                        beerLookup[beer.BeerId] = existingBeer;
+                    }
+    
+                    if (cafe != null)
+                    {
+                        existingBeer.Cafes.Add(cafe);
+                    }
+                }
+    
+                return existingBrewer;
+            },
+            splitOn: "BeerId,CafeId"
+        ).Distinct().ToList();
+    
+        return brewers;
     }
     
     // 3.10 Question - Er is geen test voor deze vraag
